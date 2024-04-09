@@ -1,0 +1,27 @@
+.event-item-container {
+  margin: 10px;
+  font-family: 'Roboto';
+  color: #ffffff;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.image-event {
+  width: 50%;
+  height: 50%;
+}
+
+.heading {
+  font-size: 20px;
+}
+
+.btn-image {
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+}
