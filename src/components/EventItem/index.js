@@ -1,21 +1,21 @@
 import './index.css'
 
 const EventItem = props => {
-  const {eachEvent, clickEvent} = props
-  const {id, imageUrl, name, location} = eachEvent
+  const {eventDetails, setActiveEventId, isActive} = props
+  const {imageUrl, name, location, id} = eventDetails
+  const eventImageClassName = isActive ? 'event-image active' : 'event-image'
 
-  const eventClicks = () => {
-    clickEvent(id)
+  const onClickEvent = () => {
+    setActiveEventId(id)
   }
 
   return (
-    <li className="event-item-container" key={id}>
-      <button type="button" className="btn-image" onClick={eventClicks}>
-        <img src={imageUrl} alt={name} className="image-event" />
+    <li className="event-item">
+      <button type="button" className="event-button" onClick={onClickEvent}>
+        <img src={imageUrl} alt="event" className={eventImageClassName} />
       </button>
-
-      <h1 className="heading">{name}</h1>
-      <p className="paragraph">{location}</p>
+      <p className="name">{name}</p>
+      <p className="location">{location}</p>
     </li>
   )
 }

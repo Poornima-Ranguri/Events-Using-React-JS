@@ -1,5 +1,8 @@
 import {Component} from 'react'
+
+import ActiveEventRegistrationDetails from '../ActiveEventRegistrationDetails'
 import EventItem from '../EventItem'
+
 import './index.css'
 
 const eventsList = [
@@ -52,108 +55,52 @@ const eventsList = [
   },
 ]
 
-const apiStatusConstants = {
-  initial: 'INITIAL',
-  yetToRegister: 'YET_TO_REGISTER',
-
-  registerd: 'REGISTERED',
-  registrationsClosed: 'REGISTRATIONS_CLOSED',
-}
-
 class Events extends Component {
   state = {
-    apiStatus: apiStatusConstants.initial,
+    activeEventId: '',
   }
 
-  onClickEvent = id => {
-    const clickedEvent = eventsList.filter(eachEvent => eachEvent.id === id)
-    this.setState({apiStatus: clickedEvent[0].registrationStatus})
-    console.log(clickedEvent[0].registrationStatus)
+  getActiveEventRegistrationStatus = () => {
+    const {activeEventId} = this.state
+    const activeEventDetails = eventsList.find(
+      event => event.id === activeEventId,
+    )
+    if (activeEventDetails) {
+      return activeEventDetails.registrationStatus
+    }
+    return ''
   }
 
-  renderNoContent = () => (
-    <div className="no-content-container">
-      <h1 className="no-text">
-        Click on an event, to view its registration details
-      </h1>
-    </div>
-  )
+  setActiveEventId = id => {
+    this.setState({activeEventId: id})
+  }
 
-  renderYetToRegister = () => (
-    <div className="register-container">
-      <img
-        src="https://assets.ccbp.in/frontend/react-js/events-register-img.png"
-        alt="yet to register"
-        className="image-register"
-      />
-      <p className="text-register">
-        A live performance brings so much to your relationship with dance.Seeing
-        dance live can often make you fall totally in love with this beautiful
-        art form.
-      </p>
-      <button className="btn-register" type="button">
-        Register Here
-      </button>
-    </div>
-  )
-
-  renderRegistered = () => (
-    <div className="registered-container">
-      <img
-        src="https://assets.ccbp.in/frontend/react-js/events-regestered-img.png"
-        className="correct-image"
-        alt="registered"
-      />
-      <p className="text-register">You have already registered for the event</p>
-    </div>
-  )
-
-  renderRegistrationClosed = () => (
-    <div className="registered-container">
-      <img
-        src="https://assets.ccbp.in/frontend/react-js/events-registrations-closed-img.png"
-        alt="registrations closed"
-        className="correct-image"
-      />
-      <h1 className="text-closed">Registrations Are Closed Now!</h1>
-      <p className="text-register">
-        Stay tuned. We will reopen the registrations soon!
-      </p>
-    </div>
-  )
+  renderEventsList = () => {
+    const {activeEventId} = this.state
+    return (
+      <ul className="events-list">
+        {eventsList.map(eachEvent => (
+          <EventItem
+            key={eachEvent.id}
+            eventDetails={eachEvent}
+            setActiveEventId={this.setActiveEventId}
+            isActive={eachEvent.id === activeEventId}
+          />
+        ))}
+      </ul>
+    )
+  }
 
   render() {
-    const {apiStatus} = this.state
-    let renderValue = ''
-    switch (apiStatus) {
-      case apiStatusConstants.registrationsClosed:
-        renderValue = this.renderRegistrationClosed()
-        break
-
-      case apiStatusConstants.registerd:
-        renderValue = this.renderRegistered()
-        break
-      case apiStatusConstants.yetToRegister:
-        renderValue = this.renderYetToRegister()
-        break
-
-      default:
-        renderValue = this.renderNoContent()
-    }
-
     return (
-      <div className="app-container">
-        <h1>Events</h1>
-        <ul className="event-list">
-          {eventsList.map(eachItem => (
-            <EventItem
-              key={eachItem.id}
-              eachEvent={eachItem}
-              clickEvent={this.onClickEvent}
-            />
-          ))}
-        </ul>
-        {renderValue}
+      <div className="events-container">
+        <div className="events-content">
+          <h1 className="heading">Events</h1>
+          {this.renderEventsList()}
+        </div>
+        <ActiveEventRegistrationDetails
+          activeEventRegistrationStatus={this.getActiveEventRegistrationStatus()}
+        />
       </div>
     )
   }
